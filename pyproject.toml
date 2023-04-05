@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "flab-bada"
+version = "0.1.0"
+description = ""
+authors = ["jin3137 <jin3137@gmail.com>"]
+readme = "README.md"
+packages = []
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.95.0"
+black = "^23.3.0"
+flake8 = "^6.0.0"
+uvicorn = "^0.21.1"
+pytest = "^7.2.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
