@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["jin3137 <jin3137@gmail.com>"]
 readme = "README.md"
-packages = []
+packages = [{include = "flab_bada"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -13,6 +13,16 @@ black = "^23.3.0"
 flake8 = "^6.0.0"
 uvicorn = "^0.21.1"
 pytest = "^7.2.2"
+alembic = "^1.10.3"
+sqlalchemy = "^2.0.10"
+mysqlclient = "^2.1.1"
+pymysql = "^1.0.3"
+pydantic = "^1.10.7"
+python-multipart = "^0.0.6"
+passlib = "^1.7.4"
+bcrypt = "^4.0.1"
+python-jose = "^3.3.0"
+httpx = "^0.24.0"
 
 
 [build-system]

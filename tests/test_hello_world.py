@@ -1,4 +1,13 @@
-def test_hello_world():
-    hello = "hello_world"
+from main import app
+from fastapi.testclient import TestClient
 
-    assert hello == "hello_world"
+
+client = TestClient(app)
+
+
+def test_login():
+    resp = client.get(
+        "/",
+    )
+    print(f"\n\t response: {resp.text}")
+    assert resp.status_code == 200
