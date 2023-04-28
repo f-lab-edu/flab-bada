@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from flab_bada.controller.controller import controller_router
-from flab_bada.users.user_controller import user_router
+from flab_bada.domain.users.user_controller import user_router
 
 
 app = FastAPI()

@@ -1,0 +1,34 @@
+name: flab test
+on: 
+  push:
+    branches:
+      - develop
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+      
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+      
+      - name: install dependencies
+        run:
+          poetry add black
+          poetry add flake8
+          poetry add pytest
+
+      - name: black check
+        run:
+          black flab_bada/
+
+      - name: flake8 check
+        run:
+          flake8 flab_bada/
+
+      - name: Test with pytest
+        run: python -m pytest
+      
+  

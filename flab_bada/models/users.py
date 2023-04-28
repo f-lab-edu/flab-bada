@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String
-from flab_bada.database.database import Base
+from . import Column, Integer, String
+from . import Base
 
 
 class User(Base):
@@ -8,4 +8,4 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String)
     password = Column(String)
-    is_active = Column(String, default="Y")
+    use_yn = Column(String, default="Y")

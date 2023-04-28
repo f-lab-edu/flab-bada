@@ -254,6 +254,3 @@ cython_debug/
 .idea/
 .vscode/
 
-# alembic
-alembic/
-alembic.ini

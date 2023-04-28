@@ -1,5 +1,4 @@
-from fastapi import APIRouter, status
-from flab_bada.schemas.users import BaseUser
+from fastapi import APIRouter
 
 controller_router = APIRouter()
 

@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
 from flab_bada.schemas.users import CreateUser, BaseUser, Token
 from flab_bada.utils.bcrypt import get_cryptcontext
-from flab_bada.users.user_service import UserService
+from flab_bada.domain.users.user_service import UserService
 from sqlalchemy.orm import Session
 from flab_bada.database.database import get_db
 from flab_bada.utils.bcrypt import verify_token
