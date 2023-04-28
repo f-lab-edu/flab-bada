@@ -16,7 +16,7 @@ jobs:
       
       - name: install dependencies
         run:
-          curl -sSL https://install.python-poetry.org
+          curl -sSL https://install.python-poetry.org | python3 - --version 1.2.0
           poetry add black
           poetry add flake8
           poetry add pytest
