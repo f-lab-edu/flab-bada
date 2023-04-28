@@ -9,7 +9,6 @@ from flab_bada.models.users import User
 
 
 class UserRepository:
-
     def __init__(self, email: str, pw: str = ""):
         self.email = email
         self.pw = pw
@@ -37,4 +36,3 @@ class UserRepository:
         if not user:
             return None
         return user
-

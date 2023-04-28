@@ -23,8 +23,7 @@ async def auth(token: str = Depends(oauth2_scheme)) -> str:
     """
     if not token:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Sign in for access"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Sign in for access"
         )
     decode_token_email = verify_token(token)
     return decode_token_email
@@ -32,8 +31,7 @@ async def auth(token: str = Depends(oauth2_scheme)) -> str:
 
 @user_router.post("/signup", status_code=status.HTTP_200_OK)
 async def sign_new_user(data: CreateUser, db: Session = Depends(get_db)) -> dict:
-    """회원가입
-    """
+    """회원가입"""
     try:
         # todo: email checking, email 중복 checking
         user_email = data.email
@@ -52,8 +50,7 @@ async def sign_new_user(data: CreateUser, db: Session = Depends(get_db)) -> dict
 
 @user_router.post("/login", response_model=Token, status_code=status.HTTP_200_OK)
 async def login(data: CreateUser, db: Session = Depends(get_db)) -> dict:
-    """로그인
-    """
+    """로그인"""
     try:
         email = data.email
         pw = data.password
@@ -68,8 +65,7 @@ async def login(data: CreateUser, db: Session = Depends(get_db)) -> dict:
 
 @user_router.get("/users/me", response_model=BaseUser, status_code=status.HTTP_200_OK)
 async def me(db: Session = Depends(get_db), email: str = Depends(auth)):
-    """내정보
-    """
+    """내정보"""
     try:
         print(f"email: {email}")
         us = UserService(email=email)
@@ -77,4 +73,3 @@ async def me(db: Session = Depends(get_db), email: str = Depends(auth)):
     except Exception as e:
         raise e
     return user
-

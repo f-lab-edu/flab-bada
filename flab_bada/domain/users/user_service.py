@@ -13,7 +13,11 @@ from flab_bada.models.users import User
 from flab_bada.schemas.users import BaseUser
 from sqlalchemy.orm import Session
 from flab_bada.loggin.loggin import log_config
-from flab_bada.utils.bcrypt import verify_password, ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
+from flab_bada.utils.bcrypt import (
+    verify_password,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    create_access_token,
+)
 from fastapi import HTTPException, status
 from datetime import timedelta
 
@@ -56,15 +60,9 @@ class UserService:
                 db=db, user=User(email=self.email, password=self.pw)
             )
         else:
-            return {
-                "message": "중복 데이터가 존재합니다.",
-                "status": "duplication"
-            }
+            return {"message": "중복 데이터가 존재합니다.", "status": "duplication"}
 
-        return {
-            "message": "저장을 완료 하였습니다.",
-            "status": "ok"
-        }
+        return {"message": "저장을 완료 하였습니다.", "status": "ok"}
 
     # 이메일, 패스워드 체크
     def chk_email_password_user(self, db: Session) -> bool:
@@ -102,7 +100,9 @@ class UserService:
                 data={"sub": self.email}, expires_delta=access_token_expires
             )
         else:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="아이디와 비번이 틀렸습니다.")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="아이디와 비번이 틀렸습니다."
+            )
 
         return {"access_token": access_token, "token_type": "bearer"}
 

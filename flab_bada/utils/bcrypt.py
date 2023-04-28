@@ -5,7 +5,7 @@ from datetime import timedelta, datetime
 from jose import jwt, JWTError
 
 
-# log = log_config("utils bcrypt")
+log = log_config("utils bcrypt")
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -18,7 +18,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 def get_cryptcontext(input_data: str) -> str:
     """
-        
+
     Args:
         input_data: 사용자 비번 데이터
     Return:
@@ -78,4 +78,6 @@ def verify_token(token: str):
             )
         return email
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
+        )
