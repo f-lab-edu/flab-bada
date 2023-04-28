@@ -42,12 +42,12 @@ class TestUsers:
         print(f"\n\t response: {resp.text}")
         assert resp.status_code == 200
 
-    # def test_me(self):
-    #     token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqaW4zMTM3QGdtYWlsLmNvbSIsImV4cCI6MTY4MjY2NDg1MX0.IPRG09N8fFCGXvHykbPoGQ6MCvAC1pjnu8_H4PWpQjE"
-    #     resp = client.get(
-    #         "/users/me",
-    #         headers={"Authorization": f"Bearer {token}"}
-    #     )
-    #
-    #     print(f"\n\t response: {resp.text}")
-    #     assert resp.status_code == 200
+    def test_me(self):
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqaW4zMTM3QGdtYWlsLmNvbSIsImV4cCI6MTY4MjY2NDg1MX0.IPRG09N8fFCGXvHykbPoGQ6MCvAC1pjnu8_H4PWpQjE"
+        resp = client.get(
+            "/users/me",
+            headers={"Authorization": f"Bearer {token}"}
+        )
+
+        print(f"\n\t response: {resp.text}")
+        assert resp.status_code == 200

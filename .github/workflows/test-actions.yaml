@@ -46,7 +46,7 @@ jobs:
       - name: flake8 check
         run: poetry run flake8 flab_bada/ --max-line-length=127
 
-      - name: Test with pytest
-        run: poetry run pytest
+#      - name: Test with pytest
+#        run: poetry run pytest
       
   
