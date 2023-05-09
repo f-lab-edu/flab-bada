@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from flab_bada.loggin.loggin import log_config
-from flab_bada.config.config import TokenSetting
+from flab_bada.config.config import token_setting
 from passlib.context import CryptContext
 from datetime import timedelta, datetime
 from jose import jwt, JWTError
@@ -12,7 +12,6 @@ log = log_config("utils bcrypt")
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-token_setting = TokenSetting()
 SECRET_KEY = token_setting.SECRET_KEY
 ALGORITHM = token_setting.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = token_setting.ACCESS_TOKEN_EXPIRE_MINUTES

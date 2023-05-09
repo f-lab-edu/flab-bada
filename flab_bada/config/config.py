@@ -28,3 +28,4 @@ def db_setting():
 
 
 db_setting = db_setting()
+token_setting = TokenSetting()
