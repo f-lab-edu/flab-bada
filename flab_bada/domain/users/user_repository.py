@@ -3,36 +3,37 @@
     1. 유저 조회
     2. 유저 생성
 """
+from typing import Type
+
 from flab_bada.schemas.users import CreateUser
-from sqlalchemy.orm import Session
 from flab_bada.models.users import User
+from flab_bada.database.database import get_db
+from sqlalchemy.orm import Session
+from fastapi import Depends
 
 
 class UserRepository:
-    def __init__(self, email: str, pw: str = ""):
-        self.email = email
-        self.pw = pw
+    db: Session
 
-    def create_user_data(self, db: Session, user: CreateUser) -> None:
-        """
-            유저 생성
+    def __init__(self, db: Session = Depends(get_db)):
+        self.db = db
+
+    def create_user_data(self, user: CreateUser) -> CreateUser:
+        """유저 생성
         Args:
-            db: 디비
+            user:
         """
-        db.add(user)
-        db.commit()
-        db.refresh(user)
+        self.db.add(user)
+        self.db.commit()
+        self.db.refresh(user)
         return user
 
-    def get_user(self, db: Session):
-        """
-            유저 조회
-        Args:
-            db: 디비
+    def get_user(self, email) -> Type[User] | None:
+        """유저 조회
         Return:
             유저 데이터
         """
-        user = db.query(User).filter(User.email == self.email).first()
+        user = self.db.query(User).filter(User.email == email).first()
         if not user:
             return None
         return user

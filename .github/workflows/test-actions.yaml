@@ -3,10 +3,25 @@ on:
   push:
     branches:
       - develop
+env:
+  APP_ENV: test
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-      
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: test
+          MYSQL_ROOT_PASSWORD: dltjdrnr3137
+          MYSQL_USER: root
+          MYSQL_PASSWORD: dltjdrnr3137
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+
     steps:
       - uses: actions/checkout@v3
 
@@ -46,7 +61,13 @@ jobs:
       - name: flake8 check
         run: poetry run flake8 flab_bada/ --max-line-length=127
 
-#      - name: Test with pytest
-#        run: poetry run pytest
+      - name: alembic init
+        run: alembic init .
+
+      - name: alembic upgrade
+        run: alembic upgrade head
+
+      - name: Test with pytest
+        run: poetry run pytest
       
   

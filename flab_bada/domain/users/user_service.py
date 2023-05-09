@@ -10,15 +10,15 @@
 """
 from flab_bada.domain.users.user_repository import UserRepository
 from flab_bada.models.users import User
-from flab_bada.schemas.users import BaseUser
-from sqlalchemy.orm import Session
+from flab_bada.schemas.users import BaseUser, CreateUser
 from flab_bada.loggin.loggin import log_config
 from flab_bada.utils.bcrypt import (
     verify_password,
     ACCESS_TOKEN_EXPIRE_MINUTES,
     create_access_token,
+    get_cryptcontext,
 )
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from datetime import timedelta
 
 
@@ -26,38 +26,24 @@ log = log_config("user service")
 
 
 class UserService:
-    def __init__(self, email: str, pw: str = ""):
-        self.email = email
-        self.pw = pw
-        self._user_repository: UserRepository = UserRepository(email, pw)
-
-    # 유저 조회
-    def get_user(self, db: Session) -> User:
-        """유저 조회
-
-        Args:
-             db: 디비
-        Return:
-            User: 유저 데이터
-        """
-        return self._user_repository.get_user(db)
+    def __init__(self, user_repository: UserRepository = Depends()):
+        self._user_repository: UserRepository = user_repository
 
     # 유저 생성
-    def create_user(self, db: Session) -> dict:
+    def create_user(self, create_user: CreateUser) -> dict:
         """유저 생성
-        Args:
-             db:
         Return:
             응답데이터 생성
         """
 
         # 중복 체크
-        user = self.get_user(db=db)
-        print(f"user: {user}")
+        user = self._user_repository.get_user(create_user.email)
 
         if not user:
+            # password bcrypt
+            user_pw = get_cryptcontext(create_user.password)
             self._user_repository.create_user_data(
-                db=db, user=User(email=self.email, password=self.pw)
+                user=User(email=create_user.email, password=user_pw)
             )
         else:
             return {"message": "중복 데이터가 존재합니다.", "status": "duplication"}
@@ -65,39 +51,38 @@ class UserService:
         return {"message": "저장을 완료 하였습니다.", "status": "ok"}
 
     # 이메일, 패스워드 체크
-    def chk_email_password_user(self, db: Session) -> bool:
+    def check_email_password_user(self, email, password: str) -> bool:
         """이메일, 패스워드 체크
         Args:
-            db: 디비
+            email:
+            password:
         Return
             로그인 확인 True, 로그인 실패 False
         """
-        chk_bool = False
-        user: User = self.get_user(db)
+        check_bool = False
+        user: User | None = self._user_repository.get_user(email=email)
         # 유저가 존재 한다면 입력 비번과 디비 정보 비번 비교
         if user:
-            chk = verify_password(self.pw, user.password)
-            if chk:
-                chk_bool = True
-        return chk_bool
+            check = verify_password(password, user.password)
+            if check:
+                check_bool = True
+        return check_bool
 
     # 로그인
-    def login(self, db: Session):
+    def login(self, user: CreateUser) -> dict:
         """로그인을 한다.
-        Args:
-            db: 디비
         Return:
             dict: access token, token type
         """
         log.debug(" login start ")
-        chk = self.chk_email_password_user(db)
+        check_password = self.check_email_password_user(user.email, user.password)
 
         # 유저가 존재 한다면 입력 비번과 디비 정보 비번 비교
-        if chk:
+        if check_password:
             # token 생성
             access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
             access_token = create_access_token(
-                data={"sub": self.email}, expires_delta=access_token_expires
+                data={"sub": user.email}, expires_delta=access_token_expires
             )
         else:
             raise HTTPException(
@@ -107,13 +92,10 @@ class UserService:
         return {"access_token": access_token, "token_type": "bearer"}
 
     # 내정보
-    def me(self, db: Session) -> BaseUser:
-        """
-            내 정보 데이터
-        Args:
-             db: 디비
+    def me(self, email) -> BaseUser:
+        """내 정보 데이터
         Return:
             BaseUser: 유저 데이터
         """
-        user = self.get_user(db)
+        user = self._user_repository.get_user(email)
         return BaseUser(id=user.id, email=user.email)

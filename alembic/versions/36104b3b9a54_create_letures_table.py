@@ -24,7 +24,7 @@ def upgrade() -> None:
         sa.Column("name", sa.VARCHAR(20)),
         sa.Column("doc", sa.TEXT),
         sa.Column("create_date", sa.TIMESTAMP, server_default=sa.sql.func.now()),
-        sa.Column("update_date", sa.TIMESTAMP, server_default=sa.sql.func.now()),
+        sa.Column("update_date", sa.TIMESTAMP, server_default=sa.sql.func.now())
     )
 
 

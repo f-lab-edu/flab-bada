@@ -9,5 +9,4 @@ def test_login():
     resp = client.get(
         "/",
     )
-    print(f"\n\t response: {resp.text}")
     assert resp.status_code == 200

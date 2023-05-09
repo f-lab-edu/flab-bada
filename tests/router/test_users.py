@@ -3,9 +3,9 @@ from flab_bada.models.users import User
 from sqlalchemy.orm import Session
 from fastapi.testclient import TestClient
 from main import app
-from flab_bada.utils.bcrypt import verify_token
 
 
+token = ""
 client = TestClient(app)
 
 
@@ -21,33 +21,24 @@ class TestUsers:
         Args:
             db: 데이터 베이스 연동
         """
-
-        user = User(
-            email="jin3137@gmail.com",
-            password="dltjdrnr3137",
-            is_active="Y",
+        resp = client.post(
+            "/signup",
+            json={"email": "jin3137@gmail.com", "password": "dltjdrnr3137"},
         )
-        with db.begin() as session:
-            session.add(user)
-            session.commit()
-            session.flush(user)
-        print(user)
+        assert resp.status_code == 200
 
     def test_login(self):
         resp = client.post(
             "/login",
             json={"email": "jin3137@gmail.com", "password": "dltjdrnr3137"},
         )
-
-        print(f"\n\t response: {resp.text}")
         assert resp.status_code == 200
+        global token
+        token = resp.json().get("access_token")
 
     def test_me(self):
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqaW4zMTM3QGdtYWlsLmNvbSIsImV4cCI6MTY4MjY2NDg1MX0.IPRG09N8fFCGXvHykbPoGQ6MCvAC1pjnu8_H4PWpQjE"
         resp = client.get(
             "/users/me",
             headers={"Authorization": f"Bearer {token}"}
         )
-
-        print(f"\n\t response: {resp.text}")
         assert resp.status_code == 200

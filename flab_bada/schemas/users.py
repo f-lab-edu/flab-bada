@@ -8,7 +8,7 @@ class BaseUser(BaseModel):
 
 class CreateUser(BaseModel):
     email: str
-    password: str
+    password: str | None = None
 
     class Config:
         schema_extra = {
@@ -21,4 +21,4 @@ class CreateUser(BaseModel):
 
 class Token(BaseModel):
     access_token: str
-    token_type: str
+    token_type: str | None = None

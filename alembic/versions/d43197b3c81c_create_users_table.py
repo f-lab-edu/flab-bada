@@ -23,6 +23,7 @@ def upgrade() -> None:
         sa.Column("email", sa.VARCHAR(30)),
         sa.Column("password", sa.VARCHAR(100)),
         sa.Column("use_yn", sa.CHAR(1), server_default="Y"),
+        sa.Column("role", sa.VARCHAR(10), server_default="user"),
         sa.Column("create_date", sa.TIMESTAMP, server_default=sa.sql.func.now()),
         sa.Column("update_date", sa.TIMESTAMP, server_default=sa.sql.func.now()),
     )
