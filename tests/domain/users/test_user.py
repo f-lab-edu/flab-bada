@@ -11,7 +11,7 @@ class TestUser:
         password = "dltjdrnr3137"
         user_service = UserService(user_repository=UserRepository(ConnDb().get_session()))
 
-        token_data = user_service.login(CreateUser(email=email, password=password))
+        token_data: dict = user_service.login(CreateUser(email=email, password=password))
         token = token_data.get("access_token")
         assert token_data.get("access_token") != ""
         assert token_data.get("token_type") == "bearer"
