@@ -6,6 +6,14 @@ from flab_bada.utils.bcrypt import verify_token
 
 class TestUser:
 
+    def test_create(self):
+        email = "jin3137@gmail.com"
+        password = "dltjdrnr3137"
+        user_service = UserService(user_repository=UserRepository(ConnDb().get_session()))
+        ret_data = user_service.create_user(CreateUser(email=email, password=password))
+
+        assert ret_data != ""
+
     def test_login_and_me(self):
         email = "jin3137@gmail.com"
         password = "dltjdrnr3137"
