@@ -55,6 +55,9 @@ jobs:
         run: |
           source .venv/bin/activate
 
+      - name: cryptography
+        run: poetry add cryptography
+
       - name: black check
         run: poetry run black flab_bada/ --line-length=127
 
