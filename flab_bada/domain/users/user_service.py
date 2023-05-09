@@ -42,9 +42,7 @@ class UserService:
         if not user:
             # password bcrypt
             user_pw = get_cryptcontext(create_user.password)
-            self._user_repository.create_user_data(
-                user=User(email=create_user.email, password=user_pw)
-            )
+            self._user_repository.create_user_data(user=User(email=create_user.email, password=user_pw))
         else:
             return {"message": "중복 데이터가 존재합니다.", "status": "duplication"}
 
@@ -81,13 +79,9 @@ class UserService:
         if check_password:
             # token 생성
             access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            access_token = create_access_token(
-                data={"sub": user.email}, expires_delta=access_token_expires
-            )
+            access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
         else:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="아이디와 비번이 틀렸습니다."
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="아이디와 비번이 틀렸습니다.")
 
         return {"access_token": access_token, "token_type": "bearer"}
 

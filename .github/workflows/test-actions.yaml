@@ -56,7 +56,7 @@ jobs:
           source .venv/bin/activate
 
       - name: black check
-        run: poetry run black flab_bada/
+        run: poetry run black flab_bada/ --line-length=127
 
       - name: flake8 check
         run: poetry run flake8 flab_bada/ --max-line-length=127
