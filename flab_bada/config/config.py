@@ -14,7 +14,7 @@ class Dbconnection(BaseSettings):
 
 
 class TestDbconnection(BaseSettings):
-    db_user = "admin"
+    db_user = "root"
     db_password = "dltjdrnr3137"
     db_host = "localhost"
     db_port = 3306
