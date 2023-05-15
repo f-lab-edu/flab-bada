@@ -1,5 +1,4 @@
 from flab_bada.database.database import SessionLocal
-from flab_bada.models.users import User
 from sqlalchemy.orm import Session
 from fastapi.testclient import TestClient
 from main import app

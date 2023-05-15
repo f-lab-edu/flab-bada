@@ -25,6 +25,10 @@ python-jose = "^3.3.0"
 httpx = "^0.24.0"
 
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+pymysql = "^1.0.3"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

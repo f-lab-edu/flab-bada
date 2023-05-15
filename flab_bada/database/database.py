@@ -1,13 +1,9 @@
 from sqlalchemy import create_engine
-# from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, declarative_base
 from ..config.config import db_setting
 
 # 환경 설정으로 옮겨야 한다.
-# SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:dltjdrnr3137@localhost/nlp"
-SQLALCHEMY_DATABASE_URL = (
-    f"mysql+pymysql://{db_setting.db_user}:{db_setting.db_password}@{db_setting.db_host}/{db_setting.db_name}"
-)
+SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{db_setting.db_user}:{db_setting.db_password}@{db_setting.db_host}/{db_setting.db_name}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, future=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

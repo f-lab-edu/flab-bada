@@ -26,3 +26,7 @@
 - naver cloud
 
 ## 전체 구조
+
+
+## 테이블 구조 
+[테이블구조 참조](https://www.erdcloud.com/d/KP949BRL7W8mT3BK7)

@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
 from flab_bada.database.database import Base
+from .users import User
 
 
 class Lecture(Base):
@@ -9,6 +11,4 @@ class Lecture(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     name = Column(String)
     doc = Column(String)
-
-    # relation 관련
-    # lecture = relationship("")
+    user = relationship(f"{User.__name__}")
