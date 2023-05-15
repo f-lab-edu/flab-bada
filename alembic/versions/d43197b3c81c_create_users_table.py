@@ -17,8 +17,6 @@ depends_on = None
 
 
 def upgrade() -> None:
-    op.drop_table("users")
-
     op.create_table(
         "users",
         sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
