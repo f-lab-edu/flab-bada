@@ -27,7 +27,7 @@ log = log_config("user service")
 
 class UserService:
     def __init__(self, user_repository: UserRepository = Depends()):
-        self._user_repository: UserRepository = user_repository
+        self.user_repository: UserRepository = user_repository
 
     # 유저 생성
     def create_user(self, create_user: CreateUser) -> dict:
@@ -37,12 +37,11 @@ class UserService:
         """
 
         # 중복 체크
-        user = self._user_repository.get_user(create_user.email)
-
+        user = self.user_repository.get_user(create_user.email)
         if not user:
             # password bcrypt
             user_pw = get_cryptcontext(create_user.password)
-            self._user_repository.create_user_data(
+            self.user_repository.create_user_data(
                 user=User(email=create_user.email, password=user_pw)
             )
         else:
@@ -60,7 +59,7 @@ class UserService:
             로그인 확인 True, 로그인 실패 False
         """
         check_bool = False
-        user: User | None = self._user_repository.get_user(email=email)
+        user: User | None = self.user_repository.get_user(email=email)
         # 유저가 존재 한다면 입력 비번과 디비 정보 비번 비교
         if user:
             check = verify_password(password, user.password)
@@ -97,5 +96,5 @@ class UserService:
         Return:
             BaseUser: 유저 데이터
         """
-        user = self._user_repository.get_user(email)
+        user = self.user_repository.get_user(email)
         return BaseUser(id=user.id, email=user.email)

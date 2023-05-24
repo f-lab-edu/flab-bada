@@ -10,9 +10,13 @@ from flab_bada.models.users import User
 from flab_bada.database.database import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
+from flab_bada.loggin.loggin import log_config
+from .. import AbstractRepository
+
+log = log_config("user repository")
 
 
-class UserRepository:
+class UserRepository(AbstractRepository):
     db: Session
 
     def __init__(self, db: Session = Depends(get_db)):
@@ -23,12 +27,13 @@ class UserRepository:
         Args:
             user:
         """
+        log.debug(f" create_user_data -> data: {user}")
         self.db.add(user)
         self.db.commit()
         self.db.refresh(user)
         return user
 
-    def get_user(self, email) -> Type[User] | None:
+    def get_user(self, email: str) -> Type[User] | None:
         """유저 조회
         Return:
             유저 데이터
