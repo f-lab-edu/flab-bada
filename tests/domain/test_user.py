@@ -58,7 +58,7 @@ class TestUser:
     @classmethod
     def setup_class(cls):
         email = "jin3137@gmail.com"
-        password = "dltjdrnr3137"
+        password = "dltjdrnR#!37"
         cls.email = email
         cls.password = password
         user_service = UserService(user_repository=FakeUserRepository())
