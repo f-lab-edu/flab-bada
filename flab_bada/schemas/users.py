@@ -30,3 +30,8 @@ class CreateUser(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str | None = None
+
+
+class EmailSecret(BaseModel):
+    email: EmailStr
+    secret_num: str

@@ -11,7 +11,7 @@
 from flab_bada.domain.users.user_repository import UserRepository
 from flab_bada.models.users import User
 from flab_bada.schemas.users import BaseUser, CreateUser
-from flab_bada.loggin.loggin import log_config
+from flab_bada.logging.logging import log_config
 from flab_bada.utils.bcrypt import (
     verify_password,
     ACCESS_TOKEN_EXPIRE_MINUTES,
@@ -41,9 +41,7 @@ class UserService:
         if not user:
             # password bcrypt
             user_pw = get_cryptcontext(create_user.password)
-            self.user_repository.create_user_data(
-                user=User(email=create_user.email, password=user_pw)
-            )
+            self.user_repository.create_user_data(user=User(email=create_user.email, password=user_pw))
         else:
             return {"message": "중복 데이터가 존재합니다.", "status": "duplication"}
 
@@ -80,13 +78,9 @@ class UserService:
         if check_password:
             # token 생성
             access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            access_token = create_access_token(
-                data={"sub": user.email}, expires_delta=access_token_expires
-            )
+            access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
         else:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, detail="아이디와 비번이 틀렸습니다."
-            )
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="아이디와 비번이 틀렸습니다.")
 
         return {"access_token": access_token, "token_type": "bearer"}
 

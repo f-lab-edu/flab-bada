@@ -10,7 +10,7 @@ from flab_bada.models.users import User
 from flab_bada.database.database import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from flab_bada.loggin.loggin import log_config
+from flab_bada.logging.logging import log_config
 from .. import AbstractRepository
 
 log = log_config("user repository")
@@ -42,3 +42,26 @@ class UserRepository(AbstractRepository):
         if not user:
             return None
         return user
+
+
+class FakeUserRepository(AbstractRepository):
+    def __init__(self):
+        self.users = set()
+
+    def create_user_data(self, user: CreateUser) -> CreateUser:
+        """사용자 생성
+        Args:
+            user: 가입 유저 데이터
+        Return:
+            CreateUser: user
+        """
+        id_count = len(self.users)
+        self.users.add(User(id=id_count, email=user.email, password=user.password, use_yn="N"))
+        return user
+
+    def get_user(self, email: str) -> Type[User] | None:
+        for user in self.users:
+            user_email = user.email
+            if user_email == email:
+                return user
+        return None

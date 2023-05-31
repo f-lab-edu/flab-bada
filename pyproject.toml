@@ -23,6 +23,11 @@ passlib = "^1.7.4"
 bcrypt = "^4.0.1"
 python-jose = "^3.3.0"
 httpx = "^0.24.0"
+fastapi-mail = "^1.2.8"
+yagmail = "^0.15.293"
+aioredis = "^2.0.1"
+redis = "^4.5.5"
+dependency-injector = "^4.41.0"
 
 
 [tool.poetry.group.dev.dependencies]

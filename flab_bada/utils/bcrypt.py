@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from flab_bada.loggin.loggin import log_config
+from flab_bada.logging.logging import log_config
 from flab_bada.config.config import token_setting
 from passlib.context import CryptContext
 from datetime import timedelta, datetime
@@ -79,6 +79,4 @@ def verify_token(token: str):
             )
         return email
     except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token")
