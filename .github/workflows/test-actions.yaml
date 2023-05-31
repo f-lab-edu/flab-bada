@@ -9,7 +9,6 @@ env:
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    container: node:10.18-jessie
 
     services:
       mysql:
@@ -22,7 +21,6 @@ jobs:
           MYSQL_USER: admin
           MYSQL_PASSWORD: dltjdrnr3137
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
-
       redis:
         image: redis
         ports:
