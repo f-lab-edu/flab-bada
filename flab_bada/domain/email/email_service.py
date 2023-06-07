@@ -1,60 +1,55 @@
 import secrets
-from fastapi_mail import ConnectionConfig
-from pydantic import EmailStr, BaseModel
-from typing import List
-from flab_bada.database.database import RedisConn
-from flab_bada.logging.logging import log_config
+import yagmail
 
+# from flab_bada.database.database import RedisConn
+from flab_bada.domain.email.email_repository import EmailRedisRepository
+from flab_bada.logging.logging import log_config
+from flab_bada.schemas.users import EmailSchema
 
 log = log_config("email service")
-
-
-class EmailSchema(BaseModel):
-    email: List[EmailStr]
-
-
-# 이메일 세팅 값 아직 개발중 개발완료 되면 env 환경 세팅 부분으로 이동
-conf = ConnectionConfig(
-    MAIL_USERNAME="jin3137",
-    MAIL_PASSWORD="luzrpslqymtuxjkj",
-    MAIL_FROM="jin3137@gmail.com",
-    MAIL_PORT=587,
-    # MAIL_PORT=587,
-    MAIL_SERVER="smtp.gmail.com",
-    MAIL_FROM_NAME="Gmail",
-    MAIL_STARTTLS=False,
-    MAIL_SSL_TLS=True,
-    USE_CREDENTIALS=False,
-    VALIDATE_CERTS=False,
-)
 
 
 class EmailService:
     def __init__(self):
         self.key_num = 16
-        self.redis = RedisConn().get_session()
-        # self.redis_repository = redis_repository
+        # self.redis = RedisConn().get_session()
+        self.email_redis_repository = EmailRedisRepository()
 
-    def send_email(self, email: EmailSchema):
-        pass
+    def send_email(self, email: EmailSchema) -> str:
+        """이메일 인증 보내기
+        Args:
+            email: 이메일 정보, 시크릿 번호
+
+        Return:
+            생성된 secret key 데이터
+        """
+        secret_key = self.make_secret_num()
+        html = f"""<p>회원 가입을 축하드립니다. 인증키 번호 입니다. {secret_key} 인증 버튼에 복사해 주세요."""
+        yag = yagmail.SMTP({"jin3137@gmail.com": "flab-bada"}, "mtveqsvobkhqzlrt")
+        yag.send(email.email, "flab bada 회원 인증 메일", html)
+        self.set_secret_num(email=email.email[0], key=secret_key)
+        return secret_key
 
     def make_secret_num(self) -> str:
         """파이썬 시크릿 클래스에 제공하는 토큰 값"""
         key = secrets.token_hex(self.key_num)
         return key
 
-    def set_secret_num(self, email: str) -> None:
+    def set_secret_num(self, email: str, key: str) -> None:
         """인증번호를 저장한다.
         Args:
             email: 이메일 주소
+            key:
         """
-        key = self.make_secret_num()
+        # key = self.make_secret_num()
         log.info(f" key vale : {key}")
         # 이메일, key 값을 레디스에 저장한다.
-        self.redis.set(email, key)
+        # self.redis.set(email, key)
+        self.email_redis_repository.set_email_secret_data(email=email, secret_num=key)
 
     def get_secret_num(self, email: str) -> str:
-        return self.redis.get(email)
+        # return self.redis.get(email)
+        return self.email_redis_repository.get_email_secret_data(email=email)
 
     def verify_secret_num(self, email: str, secret_key: str) -> bool:
         """인증번호 검사
