@@ -1,0 +1,2 @@
+class EmailRedisRepository:
+    pass

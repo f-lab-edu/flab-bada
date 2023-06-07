@@ -1,8 +1,3 @@
-"""
-    유저 데이터 베이스 저장 로직
-    1. 유저 조회
-    2. 유저 생성
-"""
 from typing import Type
 
 from flab_bada.schemas.users import CreateUser
