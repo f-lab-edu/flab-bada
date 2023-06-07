@@ -10,6 +10,6 @@ class CreateLecture(BaseModel):
         schema_extra = {
             "example": {
                 "name": "python",
-                "doc": "기초 파이썬에 대한 강의 이다.",
+                "doc": "기초 파이썬에 대한 강의이다.",
             }
         }

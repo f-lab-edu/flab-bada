@@ -17,11 +17,8 @@ depends_on = None
 
 
 def upgrade() -> None:
-    # op.execute("""
-    #     alter table users
-    #     add role varchar(20) after `use_yn`
-    # """)
     pass
+
 
 def downgrade() -> None:
     pass

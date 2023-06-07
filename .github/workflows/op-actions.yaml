@@ -2,7 +2,7 @@ name: flab project bada
 on: 
   push:
     branches:
-      - main
+      - release
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest

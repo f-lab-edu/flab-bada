@@ -21,6 +21,15 @@ jobs:
           MYSQL_USER: admin
           MYSQL_PASSWORD: dltjdrnr3137
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v3
@@ -68,6 +77,6 @@ jobs:
         run: poetry run alembic upgrade head
 
       - name: Test with pytest
-        run: poetry run pytest -W ignore::DeprecationWarning
+        run: poetry run pytest -v -W ignore::DeprecationWarning
       
   
