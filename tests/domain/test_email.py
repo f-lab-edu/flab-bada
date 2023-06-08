@@ -9,14 +9,14 @@ client = TestClient(app)
 
 def test_make_secret_key():
     # 회원가입 후 이메일 발송 한다.
-    es = EmailService()
+    es = EmailService(email_redis_repository=FakeEmailRedisRepository())
     key = es.make_secret_num()
     # 메모리 디비에 sceret key 저장
     es.set_secret_num(email="jin3137@1thefull.com", key=key)
 
 
 def test_confirm_email_scret_data():
-    es = EmailService()
+    es = EmailService(email_redis_repository=FakeEmailRedisRepository())
     # key 값을 받는다. (가정 이메일에서)
     key_value = es.get_secret_num(email="jin3137@gmail.com")
 
@@ -28,8 +28,8 @@ def test_confirm_email_scret_data():
 
 
 def test_confirm_email_scret_data_with_fakeredisrepository():
-    es = EmailService()
-    email = "jin3137@1thefull.com"
+    es = EmailService(email_redis_repository=FakeEmailRedisRepository())
+    email = "jin3137@gmail.com"
     # key 값을 받는다. (가정 이메일에서)
     key_value = es.get_secret_num(email=email)
 
@@ -44,7 +44,7 @@ def test_confirm_email_scret_data_with_fakeredisrepository():
 
 
 def test_send_email_and_vertify_secret_num():
-    es = EmailService()
+    es = EmailService(email_redis_repository=FakeEmailRedisRepository())
     email = ["jin3137@1thefull.com"]
 
     # 이메일 확인
