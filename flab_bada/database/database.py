@@ -3,7 +3,8 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from ..config.config import db_setting
 
 # from aioredis import StrictRedis
-import redis
+# import redis
+from redis import StrictRedis
 
 # 환경 설정으로 옮겨야 한다.
 SQLALCHEMY_DATABASE_URL = (
@@ -28,7 +29,8 @@ def get_redis_db():
     # password = ""
     port = 6379
     # session = from_url(f"redis://{host}", port=port, encoding="utf-8", decode_responses=True)
-    session = redis.StrictRedis(host=host, port=port)
+    # session = redis.StrictRedis(host=host, port=port)
+    session = StrictRedis(host=host, port=port)
     try:
         yield session
     finally:

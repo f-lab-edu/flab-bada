@@ -1,20 +1,15 @@
 from fastapi import APIRouter, status, Depends, HTTPException
-from pydantic import EmailStr, BaseModel
-from typing import List
 from starlette.responses import JSONResponse
 from flab_bada.schemas.users import EmailSecret
 from flab_bada.domain.email.email_service import EmailService
 from flab_bada.logging.logging import log_config
+from flab_bada.schemas.users import EmailSchema
 
 
 log = log_config("email controller")
 
 
 email_router = APIRouter()
-
-
-class EmailSchema(BaseModel):
-    email: List[EmailStr]
 
 
 @email_router.post("/send/email")

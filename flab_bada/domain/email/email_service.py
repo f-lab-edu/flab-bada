@@ -5,15 +5,17 @@ import yagmail
 from flab_bada.domain.email.email_repository import EmailRedisRepository
 from flab_bada.logging.logging import log_config
 from flab_bada.schemas.users import EmailSchema
+from fastapi import Depends
 
 log = log_config("email service")
 
 
 class EmailService:
-    def __init__(self):
+    def __init__(self, email_redis_repository: EmailRedisRepository = Depends()):
         self.key_num = 16
         # self.redis = RedisConn().get_session()
-        self.email_redis_repository = EmailRedisRepository()
+        # self.email_redis_repository = EmailRedisRepository()
+        self.email_redis_repository = email_redis_repository
 
     def send_email(self, email: EmailSchema) -> str:
         """이메일 인증 보내기

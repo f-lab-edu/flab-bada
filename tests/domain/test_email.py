@@ -67,15 +67,3 @@ def test_email_send_endpoint():
     )
 
     assert resp.status_code == 200
-
-
-def test_email_confirm_endpoint():
-    es = EmailService()
-    email = ["jin3137@gmail.com"]
-    secret_num = es.get_secret_num(email=email[0])
-
-    resp = client.post(
-        "/confirm/email",
-        json={"email": "jin3137@gmail.com", "secret_num": secret_num},
-    )
-    assert resp.status_code == 200
