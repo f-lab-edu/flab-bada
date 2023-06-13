@@ -1,9 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from ..config.config import db_setting
-
-# from aioredis import StrictRedis
-# import redis
+from ..config.config import db_setting, redist_setting
 from redis import StrictRedis
 
 # 환경 설정으로 옮겨야 한다.
@@ -25,9 +22,9 @@ def get_db():
 
 
 def get_redis_db():
-    host = "localhost"
+    host = redist_setting.host
     # password = ""
-    port = 6379
+    port = redist_setting.port
     # session = from_url(f"redis://{host}", port=port, encoding="utf-8", decode_responses=True)
     # session = redis.StrictRedis(host=host, port=port)
     session = StrictRedis(host=host, port=port)

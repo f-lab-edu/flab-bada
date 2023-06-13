@@ -8,11 +8,13 @@ client = TestClient(app)
 
 
 def test_make_secret_key():
+    email = "jin3137@gmail.com"
     # 회원가입 후 이메일 발송 한다.
     es = EmailService(email_redis_repository=FakeEmailRedisRepository())
-    key = es.make_secret_num()
+    es.make_secret_num(email=email)
     # 메모리 디비에 sceret key 저장
-    es.set_secret_num(email="jin3137@1thefull.com", key=key)
+    # es.set_secret_num(email="jin3137@1thefull.com", key=key)
+    assert es.get_secret_num(email=email) != ""
 
 
 def test_confirm_email_scret_data():
@@ -37,7 +39,6 @@ def test_confirm_email_scret_data_with_fakeredisrepository():
     fake_repository.set_email_secret_data(email=email, secret_num=key_value)
 
     email_secret_key_data = fake_repository.get_email_secret_data(email=email)
-
     check_data = es.verify_secret_num(email=email, secret_key=email_secret_key_data)
 
     assert check_data is True
@@ -45,13 +46,14 @@ def test_confirm_email_scret_data_with_fakeredisrepository():
 
 def test_send_email_and_vertify_secret_num():
     es = EmailService(email_redis_repository=FakeEmailRedisRepository())
-    email = ["jin3137@1thefull.com"]
+    email = ["jin3137@gmail.com"]
 
     # 이메일 확인
     # es.send_email(email=EmailSchema(email=email))
 
     # 페이크 클래스 이메일 확인
-    secret_key = es.make_secret_num()
+    es.make_secret_num(email=email[0])
+    secret_key = es.get_secret_num(email=email[0])
 
     fake_es_repository = FakeEmailRedisRepository()
     fake_es_repository.set_email_secret_data(email=email[0], secret_num=secret_key)
@@ -62,7 +64,7 @@ def test_send_email_and_vertify_secret_num():
 
 def test_email_send_endpoint():
     resp = client.post(
-        "/send/email",
+        "/email/send",
         json={"email": ["jin3137@gmail.com"]},
     )
 

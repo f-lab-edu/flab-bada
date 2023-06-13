@@ -21,6 +21,11 @@ class TestDbconnection(BaseSettings):
     db_name = "test"
 
 
+class RedisConnection(BaseSettings):
+    host = "localhost"
+    port = 6379
+
+
 def db_setting():
     if os.getenv("APP_ENV", "test") == "test":
         return TestDbconnection()
@@ -29,3 +34,4 @@ def db_setting():
 
 db_setting = db_setting()
 token_setting = TokenSetting()
+redist_setting = RedisConnection()
