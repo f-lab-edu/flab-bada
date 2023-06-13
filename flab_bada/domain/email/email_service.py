@@ -26,7 +26,7 @@ class EmailService:
             생성된 secret key 데이터
         """
         try:
-            email = email_schema.email
+            email = email_schema.email[0]
             self.make_secret_num(email=email)
             html = f"""<p>회원 가입을 축하드립니다. 인증키 번호 입니다. {self.get_secret_num(email=email)} 인증 버튼에 복사해 주세요."""
             yag = yagmail.SMTP({"jin3137@gmail.com": "flab-bada"}, "mtveqsvobkhqzlrt")
