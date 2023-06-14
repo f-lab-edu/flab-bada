@@ -1,6 +1,7 @@
 import re
 
 from pydantic import BaseModel, EmailStr, constr, validator
+from typing import List
 
 
 class BaseUser(BaseModel):
@@ -35,3 +36,12 @@ class Token(BaseModel):
 class EmailSecret(BaseModel):
     email: EmailStr
     secret_num: str
+
+
+class EmailSchema(BaseModel):
+    email: List[EmailStr]
+
+
+class Ok(BaseModel):
+    message: str
+    status: str

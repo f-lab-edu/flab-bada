@@ -1,13 +1,3 @@
-"""
-    User 로직
-
-    1. 유저 조회
-    2. 유저 생성
-    3. 유저 삭제
-    4. 로그인 토큰 생성
-    5. 메일 인증 로직
-        (1) 메일 여러번 클릭 했을 경우
-"""
 from flab_bada.domain.users.user_repository import UserRepository
 from flab_bada.models.users import User
 from flab_bada.schemas.users import BaseUser, CreateUser
