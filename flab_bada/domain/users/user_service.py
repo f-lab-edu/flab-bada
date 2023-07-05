@@ -82,3 +82,8 @@ class UserService:
         """
         user = self.user_repository.get_user(email)
         return BaseUser(id=user.id, email=user.email)
+
+    # 사용자에서 선생님으로 변경
+    def change_role(self, id: int, email: str | None) -> None:
+        log.info(f"email: {email}")
+        self.user_repository.change_role(id)

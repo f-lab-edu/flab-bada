@@ -9,6 +9,10 @@ class BaseUser(BaseModel):
     email: str
 
 
+class BaseEmail(BaseModel):
+    email: EmailStr
+
+
 class CreateUser(BaseModel):
     email: EmailStr
     password: constr(max_length=20, strip_whitespace=True)  # 최대 길이
@@ -40,6 +44,19 @@ class EmailSecret(BaseModel):
 
 class EmailSchema(BaseModel):
     email: List[EmailStr]
+
+
+# # 일반 사용자
+# class User(BaseUser):
+#     name: str = ""
+#     received_email: BaseEmail
+#     password: str = "" | None
+#     use_yn: str = "Y"
+#     role: str = "user"
+
+
+# class Teacher(User):
+#     role: str = "teacher"
 
 
 class Ok(BaseModel):
