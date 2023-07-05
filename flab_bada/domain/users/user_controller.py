@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, HTTPException, Depends, Header
+from fastapi import APIRouter, status, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
 from flab_bada.schemas.users import CreateUser, BaseUser, Token
 from flab_bada.domain.users.user_service import UserService
