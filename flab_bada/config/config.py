@@ -7,6 +7,7 @@ class TokenSetting(BaseSettings):
     SECRET_KEY = "flab"
     ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
+    CONFIRM_TOKEN_EXPIRE_MINUTES = 3
 
 
 class Dbconnection(BaseSettings):

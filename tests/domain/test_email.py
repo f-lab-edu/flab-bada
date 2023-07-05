@@ -1,6 +1,7 @@
 from flab_bada.domain.email.email_service import EmailService
 from flab_bada.domain.email.email_repository import FakeEmailRedisRepository
 from fastapi.testclient import TestClient
+from flab_bada.schemas.users import BaseEmail
 from main import app
 
 
@@ -66,6 +67,25 @@ def test_email_send_endpoint():
     resp = client.post(
         "/email/send",
         json={"email": ["jin3137@gmail.com"]},
+    )
+
+    assert resp.status_code == 200
+
+
+# 토큰 생성 후 엔드포인트에 토큰 데이터 확인
+def test_email_confirm_endpoint():
+    email = "jin3137@gmail.com"
+    es = EmailService(email_redis_repository=FakeEmailRedisRepository())
+    es.make_confirm_token(base_email=BaseEmail(email=email))
+
+    token_data = es.get_secret_num(email=email)
+
+    resp = client.get(
+        "/email/confirm/v2",
+        params={
+            "email": "jin3137@gmail.com",
+            "token": f"{token_data}",
+        },
     )
 
     assert resp.status_code == 200
