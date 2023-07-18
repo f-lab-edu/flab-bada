@@ -1,39 +1,14 @@
 import pytest
 
+from flab_bada.domain.users.user_repository import FakeUserRepository
 from flab_bada.schemas.users import CreateUser
 from flab_bada.domain.users.user_service import UserService
-from flab_bada.models.users import User
 from flab_bada.schemas.users import BaseUser
-from flab_bada.domain import AbstractRepository
 from fastapi.testclient import TestClient
-from typing import Type
 from main import app
 
 
 client = TestClient(app)
-
-
-class FakeUserRepository(AbstractRepository):
-    def __init__(self):
-        self.users = set()
-
-    def create_user_data(self, user: CreateUser) -> CreateUser:
-        """사용자 생성
-        Args:
-            user: 가입 유저 데이터
-        Return:
-            CreateUser: user
-        """
-        id_count = len(self.users)
-        self.users.add(User(id=id_count, email=user.email, password=user.password, use_yn="Y"))
-        return user
-
-    def get_user(self, email: str) -> Type[User] | None:
-        for user in self.users:
-            user_email = user.email
-            if user_email == email:
-                return user
-        return None
 
 
 class TestUserSignup:
@@ -71,17 +46,20 @@ class TestUser:
 
         cls.user_service = user_service
 
+    # 유저 생성
     def test_create(self):
         ret_data = self.user_service.create_user(CreateUser(email=self.email, password=self.password))
 
         assert ret_data != ""
         assert isinstance(ret_data, dict)
 
+    # 유저 정보 조회
     def test_get_user_data(self):
         ret_data = self.user_service.me(email="jin3137@gmail.com")
         assert ret_data != ""
         assert isinstance(ret_data, BaseUser)
 
+    # 로그인 테스트
     def test_login(self):
         token_data = self.user_service.login(CreateUser(email=self.email, password=self.password))
 

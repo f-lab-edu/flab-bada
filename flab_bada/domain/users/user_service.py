@@ -10,14 +10,16 @@ from flab_bada.utils.bcrypt import (
 )
 from fastapi import HTTPException, status, Depends
 from datetime import timedelta
+from flab_bada.domain.email.email_service import EmailService
 
 
 log = log_config("user service")
 
 
 class UserService:
-    def __init__(self, user_repository: UserRepository = Depends()):
+    def __init__(self, user_repository: UserRepository = Depends(), email_service: EmailService = Depends()):
         self.user_repository: UserRepository = user_repository
+        self.email_service = email_service
 
     # 유저 생성
     def create_user(self, create_user: CreateUser) -> dict:
@@ -32,6 +34,8 @@ class UserService:
             # password bcrypt
             user_pw = get_cryptcontext(create_user.password)
             self.user_repository.create_user_data(user=User(email=create_user.email, password=user_pw))
+
+            # todo: 유저 생성 이메일 인증 로직 추가
         else:
             return {"message": "중복 데이터가 존재합니다.", "status": "duplication"}
 

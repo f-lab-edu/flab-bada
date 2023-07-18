@@ -43,6 +43,7 @@ class UserRepository(AbstractRepository):
         user = self.db.query(User).filter(User.id == id)
         user.update({"role": "teacher"})
         self.db.commit()
+        self.db.refresh(user)
 
 
 class FakeUserRepository(AbstractRepository):

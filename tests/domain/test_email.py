@@ -8,6 +8,7 @@ from main import app
 client = TestClient(app)
 
 
+# 시크릿 키 생성
 def test_make_secret_key():
     email = "jin3137@gmail.com"
     # 회원가입 후 이메일 발송 한다.
@@ -18,6 +19,7 @@ def test_make_secret_key():
     assert es.get_secret_num(email=email) != ""
 
 
+# 이메일 시크릿 키 검증
 def test_confirm_email_scret_data():
     es = EmailService(email_redis_repository=FakeEmailRedisRepository())
     # key 값을 받는다. (가정 이메일에서)
@@ -30,6 +32,7 @@ def test_confirm_email_scret_data():
     assert isinstance(verify_bool, bool)
 
 
+# 이메일 시크릿 키 페이크 레파지토리 검증
 def test_confirm_email_scret_data_with_fakeredisrepository():
     es = EmailService(email_redis_repository=FakeEmailRedisRepository())
     email = "jin3137@gmail.com"
@@ -45,6 +48,7 @@ def test_confirm_email_scret_data_with_fakeredisrepository():
     assert check_data is True
 
 
+# 이메일 발송 후 시크릿 키 검증
 def test_send_email_and_vertify_secret_num():
     es = EmailService(email_redis_repository=FakeEmailRedisRepository())
     email = ["jin3137@gmail.com"]
@@ -63,6 +67,7 @@ def test_send_email_and_vertify_secret_num():
     assert secret_key == fake_secret_key
 
 
+# 이메일 발송 엔드포인트 테스트
 def test_email_send_endpoint():
     resp = client.post(
         "/email/send",
