@@ -64,25 +64,26 @@ class FakeLectureRepository(AbstractRepository):
         self.users = set()
 
     # 유저 조회
-    def get_user(self, user_id: int):
+    def get_user(self, user_id: int, role: str) -> Lecture | None:
         for user in self.users:
             inner_user_id = user.user_id
-            if inner_user_id == user_id:
+            if inner_user_id == user_id and role == "teacher":
                 return user
         return None
 
     # 강의 생성
     def create_lectures(self, create_lecture: CreateLecture) -> None:
         id_count = len(self.users) + 1
-        self.users.add(Lecture(id=id_count, user_id=create_lecture.user_id, name=create_lecture.name, doc=create_lecture.doc))
+        self.users.add(
+            Lecture(id=id_count, user_id=create_lecture.user_id, name=create_lecture.name, doc=create_lecture.doc)
+        )
 
     # 강의 조회힌다.
-    def get_lecture(self, lecture_id: int, role: str) -> Lecture | None:
+    def get_lecture(self, lecture_id: int) -> Lecture | None:
         """강의 조회"""
         for lecture in self.users:
             inner_lecture_id = lecture.id
-            inner_role = lecture.role
-            if inner_lecture_id == lecture_id and inner_role == role:
+            if inner_lecture_id == lecture_id:
                 return lecture
         return None
 

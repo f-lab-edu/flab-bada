@@ -18,7 +18,7 @@ class LecturesService:
         """강의 생성"""
 
         # 선생님인지 확인이 필요하다. (고민 로그인 후 선생님롤이면 화면이 변경 되지 않을까?)
-        self.lecture_repository.get_user(create_lecture.user_id)
+        # self.lecture_repository.get_user(create_lecture.user_id, create_lecture.role)
 
         # 강의 생성
         self.lecture_repository.create_lectures(create_lecture=create_lecture)
@@ -49,9 +49,7 @@ class LecturesService:
     # 강의 수정
     def update_lecture(self, tearcher_id: int, lecture_id: int, update_data: dict):
         """강의 수정"""
-        self.lecture_repository.update_lecture(
-            teacher_id=tearcher_id, lecture_id=lecture_id, update_data=update_data
-        )
+        self.lecture_repository.update_lecture(teacher_id=tearcher_id, lecture_id=lecture_id, update_data=update_data)
 
     # 강의 삭제
     def delete_lecture(self, lecture_id: int) -> None:

@@ -5,7 +5,7 @@ from flab_bada.schemas.lectures import CreateLecture
 
 # 강사를 등록한다. FakeRepository를 사용한다.
 def test_create_lecture():
-    create_lecture = CreateLecture(user_id=1, name="python 강의", doc="python 강의")
+    create_lecture = CreateLecture(user_id=1, name="python 강의", doc="python 강의", role="teacher")
     lecture_service = LecturesService(FakeLectureRepository())
     lecture_service.create_lecture(create_lecture=create_lecture)
 
@@ -16,7 +16,8 @@ class TestLecture:
         cls.lecture_service = LecturesService(FakeLectureRepository())
 
         # 강의를 등록한다.
-        create_lecture = CreateLecture(user_id=1, name="python 강의", doc="python 강의")
+        create_lecture = CreateLecture(user_id=1, name="python 강의", doc="python 강의", role="teacher")
+        # cls.lecture_service.create_lecture(create_lecture=create_lecture)
         cls.lecture_service.create_lecture(create_lecture=create_lecture)
 
     # 강사를 조회한다.
