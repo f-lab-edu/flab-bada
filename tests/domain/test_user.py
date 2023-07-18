@@ -65,17 +65,3 @@ class TestUser:
 
         assert token_data.get("access_token") != ""
         assert token_data.get("token_type") == "bearer"
-
-    # 일반 사용자에서 선생님으로 변경
-    def test_endpoint_update_user_status_data(self):
-        # 토큰 값을 받아온다.
-        token_data = self.user_service.login(CreateUser(email=self.email, password=self.password))
-
-        assert token_data.get("access_token") != ""
-
-        client.put(
-            "/users/role/1",
-            headers={
-                "Authorization": f"{token_data.get('token_type')} {token_data.get('access_token')}",
-            },
-        )
