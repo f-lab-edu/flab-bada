@@ -8,6 +8,7 @@ from flab_bada.schemas.users import BaseEmail, EmailSchema
 from fastapi import Depends
 from datetime import timedelta
 from flab_bada.utils.bcrypt import create_confirm_token, CONFIRM_TOKEN_EXPIRE_MINUTES
+from flab_bada.config.config import url_setting
 
 
 log = log_config("email service")
@@ -37,9 +38,13 @@ class EmailService:
 
     def send_email_v2(self, email_schema: EmailSchema) -> None:
         """이메일 인증 보내기"""
+        log.info("이메일 인증 보내기")
         email = email_schema.email[0]
+
+        self.make_confirm_token(base_email=BaseEmail(email=email))
+
         html = f"""<p> 회원 가입 인증 메일 입니다. </p>
-            url: http://localhost:8000/email/confirm?token={self.get_secret_num(email=email)}&email={email}
+            url: {url_setting.LOCAL_URL}/email/confirm?token={self.get_token(email=email)}&email={email}
             클릭 하셔서 인증을 마무리 해주세요. 제한 시간은 3분 입니다.
         """
         yag = yagmail.SMTP({"jin3137@gmail.com": "flab-bada"}, "mtveqsvobkhqzlrt")
@@ -69,6 +74,9 @@ class EmailService:
     def get_secret_num(self, email: str) -> str:
         return self.email_redis_repository.get_email_secret_data(email=email)
 
+    def get_token(self, email: str) -> str:
+        return self.email_redis_repository.get_email_secret_data(email=email)
+
     def verify_secret_num(self, email: str, secret_key: str) -> bool:
         """인증번호 검사
         Args:
@@ -77,20 +85,8 @@ class EmailService:
         Return:
             check_data: bool -> 비교 검사 데이터
         """
-        check_data = False
-
-        # 메모리디비에서 값을 얻는다.
-        mem_secret_key = self.get_secret_num(email)
-        if secret_key == mem_secret_key:
-            check_data = True
-        return check_data
+        return secret_key == self.get_secret_num(email)
 
     def verify_confirm_token(self, email: str, token: str) -> bool:
         """이메일 인증 토큰 검사"""
-        check_data = False
-
-        # 메모리디비에서 값을 얻는다.
-        token_key = self.get_secret_num(email)
-        if token == token_key:
-            check_data = True
-        return check_data
+        return token == self.get_secret_num(email)

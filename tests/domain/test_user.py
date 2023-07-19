@@ -1,6 +1,8 @@
 import pytest
 
 from flab_bada.domain.users.user_repository import FakeUserRepository
+from flab_bada.domain.email.email_service import EmailService
+from flab_bada.domain.email.email_repository import FakeEmailRedisRepository
 from flab_bada.schemas.users import CreateUser
 from flab_bada.domain.users.user_service import UserService
 from flab_bada.schemas.users import BaseUser
@@ -41,7 +43,9 @@ class TestUser:
         password = "dltjdrnR#!37"
         cls.email = email
         cls.password = password
-        user_service = UserService(user_repository=FakeUserRepository())
+        user_service = UserService(
+            user_repository=FakeUserRepository(), email_service=EmailService(FakeEmailRedisRepository())
+        )
         user_service.create_user(CreateUser(email=email, password=password))
 
         cls.user_service = user_service
@@ -65,3 +69,17 @@ class TestUser:
 
         assert token_data.get("access_token") != ""
         assert token_data.get("token_type") == "bearer"
+
+
+class TestUserDetail:
+    @classmethod
+    def setup_class(cls):
+        """임시 유저 생성"""
+        email = "jin3137@outlook.com"
+        password = "dltjdrnR#!37"
+        cls.email = email
+        cls.password = password
+        user_service = UserService(user_repository=FakeUserRepository())
+        user_service.create_user(CreateUser(email=email, password=password))
+
+        cls.user_service = user_service

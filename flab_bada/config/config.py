@@ -3,6 +3,11 @@ import os
 from pydantic import BaseSettings
 
 
+class UrlSetting(BaseSettings):
+    LOCAL_URL = "http://localhost:8000"
+    OP_URL = "http://localhost:8000"
+
+
 class TokenSetting(BaseSettings):
     SECRET_KEY = "flab"
     ALGORITHM = "HS256"
@@ -36,3 +41,4 @@ def db_setting():
 db_setting = db_setting()
 token_setting = TokenSetting()
 redist_setting = RedisConnection()
+url_setting = UrlSetting()

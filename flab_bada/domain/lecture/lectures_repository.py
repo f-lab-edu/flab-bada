@@ -56,7 +56,8 @@ class LectureRepository(AbstractRepository):
 
     # 강의 삭제
     def delete_lecture(self, lecture_id: int) -> None:
-        pass
+        self.db.delete(lecture_id)
+        self.db.commit()
 
 
 class FakeLectureRepository(AbstractRepository):
@@ -74,9 +75,7 @@ class FakeLectureRepository(AbstractRepository):
     # 강의 생성
     def create_lectures(self, create_lecture: CreateLecture) -> None:
         id_count = len(self.users) + 1
-        self.users.add(
-            Lecture(id=id_count, user_id=create_lecture.user_id, name=create_lecture.name, doc=create_lecture.doc)
-        )
+        self.users.add(Lecture(id=id_count, user_id=create_lecture.user_id, name=create_lecture.name, doc=create_lecture.doc))
 
     # 강의 조회힌다.
     def get_lecture(self, lecture_id: int) -> Lecture | None:
@@ -113,4 +112,9 @@ class FakeLectureRepository(AbstractRepository):
 
     # 강의 삭제
     def delete_lecture(self, lecture_id: int) -> None:
-        self.users.remove(lecture_id)
+        """강의 삭제""" ""
+        for lecture in self.users:
+            inner_lecture_id = lecture.id
+            if inner_lecture_id == lecture_id:
+                self.users.remove(lecture)
+                return None

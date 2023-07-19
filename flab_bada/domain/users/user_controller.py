@@ -32,6 +32,8 @@ async def auth(token: str = Depends(oauth2_scheme)) -> str:
 async def sign_new_user(user: CreateUser, user_service: UserService = Depends(UserService)) -> dict:
     """회원가입"""
     try:
+        log.info(" 회원 가입 페이지 ")
+        log.info(f"입력 데이터 : {user}")
         # 회원 가입
         message = user_service.create_user(user)
     except Exception as e:

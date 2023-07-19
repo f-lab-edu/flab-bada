@@ -17,7 +17,17 @@ depends_on = None
 
 
 def upgrade() -> None:
-    pass
+    "일반 유저 상세 정보 테이블 추가"
+    op.create_table(
+        "user_details",
+        sa.Column("seq", sa.Integer, primary_key=True, autoincrement=True),
+        sa.Column("user_id", sa.Integer, sa.ForeignKey("users.id")),
+        sa.Column("name", sa.VARCHAR(30)),
+        sa.Column("phone", sa.VARCHAR(30)),
+        sa.Column("nick_name", sa.VARCHAR(30)),
+        sa.Column("create_date", sa.TIMESTAMP, server_default=sa.sql.func.now()),
+        sa.Column("update_date", sa.TIMESTAMP, server_default=sa.sql.func.now()),
+    )
 
 
 def downgrade() -> None:

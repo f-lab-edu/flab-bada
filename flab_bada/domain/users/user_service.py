@@ -1,6 +1,6 @@
 from flab_bada.domain.users.user_repository import UserRepository
 from flab_bada.models.users import User
-from flab_bada.schemas.users import BaseUser, CreateUser
+from flab_bada.schemas.users import BaseUser, CreateUser, EmailSchema
 from flab_bada.logging.logging import log_config
 from flab_bada.utils.bcrypt import (
     verify_password,
@@ -30,12 +30,17 @@ class UserService:
 
         # 중복 체크
         user = self.user_repository.get_user(create_user.email)
+        log.info(f" 중복 체크 유저 데이터: {user}")
+
         if not user:
             # password bcrypt
             user_pw = get_cryptcontext(create_user.password)
+            log.info(f"bcrypt password: {user_pw}")
             self.user_repository.create_user_data(user=User(email=create_user.email, password=user_pw))
 
-            # todo: 유저 생성 이메일 인증 로직 추가
+            # 유저 생성 이메일 인증 로직 추가
+            self.email_service.send_email_v2(email_schema=EmailSchema(email=[create_user.email]))
+
         else:
             return {"message": "중복 데이터가 존재합니다.", "status": "duplication"}
 
@@ -91,3 +96,11 @@ class UserService:
     def change_role(self, id: int, email: str | None) -> None:
         log.info(f"email: {email}")
         self.user_repository.change_role(id)
+
+    # 상세 정보 조회
+    def detail_me(self, email: str, user_id: int):
+        pass
+
+    # 유저 상세 정보 업데이트
+    def update_user(self, id: int, update_data: dict) -> User:
+        pass

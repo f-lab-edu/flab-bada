@@ -54,4 +54,4 @@ class LecturesService:
     # 강의 삭제
     def delete_lecture(self, lecture_id: int) -> None:
         """강의 삭제"""
-        pass
+        self.lecture_repository.delete_lecture(lecture_id=lecture_id)

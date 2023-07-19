@@ -60,3 +60,25 @@ class TestLecture:
         else:
             # 첫번째 강의 데이터
             assert lectures[0].id == 1
+
+    # 강의를 삭제 한다.
+    def test_delete_lectures_by_teacher(self):
+        """강사의 강의를 삭제"""
+        tearcher_id = 1
+
+        # 강의를 조회한다.
+        lectures = self.lecture_service.get_lectures_by_teacher(tearcher_id)
+
+        # 데이터가 존재 하지 않을 때
+        if type(lectures) == dict:
+            assert lectures.get("message") == "강의가 존재하지 않습니다."
+        else:
+            # 첫번째 강의 데이터
+            assert lectures[0].id == 1
+
+        # 강의 아이디
+        lecture_id = lectures[0].id
+        self.lecture_service.delete_lecture(lecture_id=lecture_id)
+
+        lectures = self.lecture_service.get_lecture(lecture_id=lecture_id)
+        assert lectures.get("message") == "강의가 존재하지 않습니다."
