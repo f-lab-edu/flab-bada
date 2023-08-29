@@ -4,7 +4,7 @@ from fastapi import Depends
 from redis import Redis
 
 
-class EmailRedisRepository:
+class EmailRedisRepository(AbstractRepository):
     def __init__(self, redis_data: Redis = Depends(get_redis_db)):
         self.redis = redis_data
 

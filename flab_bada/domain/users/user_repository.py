@@ -38,6 +38,13 @@ class UserRepository(AbstractRepository):
             return None
         return user
 
+    # 사용자에서 선생님으로 변경
+    def change_role(self, id: int):
+        user = self.db.query(User).filter(User.id == id)
+        user.update({"role": "teacher"})
+        self.db.commit()
+        self.db.refresh(user)
+
 
 class FakeUserRepository(AbstractRepository):
     def __init__(self):
@@ -60,3 +67,6 @@ class FakeUserRepository(AbstractRepository):
             if user_email == email:
                 return user
         return None
+
+    def change_role(self):
+        pass

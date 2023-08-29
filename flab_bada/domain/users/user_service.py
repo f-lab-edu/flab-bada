@@ -1,6 +1,6 @@
 from flab_bada.domain.users.user_repository import UserRepository
 from flab_bada.models.users import User
-from flab_bada.schemas.users import BaseUser, CreateUser
+from flab_bada.schemas.users import BaseUser, CreateUser, EmailSchema
 from flab_bada.logging.logging import log_config
 from flab_bada.utils.bcrypt import (
     verify_password,
@@ -10,14 +10,16 @@ from flab_bada.utils.bcrypt import (
 )
 from fastapi import HTTPException, status, Depends
 from datetime import timedelta
+from flab_bada.domain.email.email_service import EmailService
 
 
 log = log_config("user service")
 
 
 class UserService:
-    def __init__(self, user_repository: UserRepository = Depends()):
+    def __init__(self, user_repository: UserRepository = Depends(), email_service: EmailService = Depends()):
         self.user_repository: UserRepository = user_repository
+        self.email_service = email_service
 
     # 유저 생성
     def create_user(self, create_user: CreateUser) -> dict:
@@ -28,10 +30,17 @@ class UserService:
 
         # 중복 체크
         user = self.user_repository.get_user(create_user.email)
+        log.info(f" 중복 체크 유저 데이터: {user}")
+
         if not user:
             # password bcrypt
             user_pw = get_cryptcontext(create_user.password)
+            log.info(f"bcrypt password: {user_pw}")
             self.user_repository.create_user_data(user=User(email=create_user.email, password=user_pw))
+
+            # 유저 생성 이메일 인증 로직 추가
+            self.email_service.send_email_v2(email_schema=EmailSchema(email=[create_user.email]))
+
         else:
             return {"message": "중복 데이터가 존재합니다.", "status": "duplication"}
 
@@ -82,3 +91,16 @@ class UserService:
         """
         user = self.user_repository.get_user(email)
         return BaseUser(id=user.id, email=user.email)
+
+    # 사용자에서 선생님으로 변경
+    def change_role(self, id: int, email: str | None) -> None:
+        log.info(f"email: {email}")
+        self.user_repository.change_role(id)
+
+    # 상세 정보 조회
+    def detail_me(self, email: str, user_id: int):
+        pass
+
+    # 유저 상세 정보 업데이트
+    def update_user(self, id: int, update_data: dict) -> User:
+        pass
