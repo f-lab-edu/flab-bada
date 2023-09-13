@@ -16,10 +16,10 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_DATABASE: $MYSQL_DATABASE
-          MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-          MYSQL_USER: $MYSQL_USER
-          MYSQL_PASSWORD: $MYSQL_PASSWORD
+          MYSQL_DATABASE: ${{secrets.MYSQL_DATABASE}}
+          MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
+          MYSQL_USER: ${{secrets.MYSQL_USER}}
+          MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
       redis:
         image: redis
@@ -74,7 +74,7 @@ jobs:
         run: poetry run flake8 flab_bada/ --max-line-length=127
 
       - name: run mysql
-        run: mysql -h 127.0.0.1 --port 3306 -u admin -p dltjdrnr3137 -e 'CREATE DATABASE IF NOT EXISTS test;'
+        run: mysql -h 127.0.0.1 --port 3306 -u ${{secrets.MYSQL_USER}} -p ${{secrets.MYSQL_PASSWORD}} -e 'CREATE DATABASE IF NOT EXISTS test;'
 
       - name: alembic upgrade
         run: poetry run alembic upgrade head
