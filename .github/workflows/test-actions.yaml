@@ -16,10 +16,10 @@ jobs:
         ports:
           - 3306:3306
         env:
-          MYSQL_DATABASE: test
-          MYSQL_ROOT_PASSWORD: dltjdrnr3137
-          MYSQL_USER: admin
-          MYSQL_PASSWORD: dltjdrnr3137
+          MYSQL_DATABASE: $MYSQL_DATABASE
+          MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+          MYSQL_USER: $MYSQL_USER
+          MYSQL_PASSWORD: $MYSQL_PASSWORD
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
       redis:
         image: redis

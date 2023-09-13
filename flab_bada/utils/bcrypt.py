@@ -13,8 +13,10 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 SECRET_KEY = token_setting.SECRET_KEY
+REFRESH_SECRET_KEY = token_setting.REFRESH_SECRET_KEY
 ALGORITHM = token_setting.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = token_setting.ACCESS_TOKEN_EXPIRE_MINUTES
+REFRESH_TOKEN_EXPIRE_MINUTES = token_setting.REFRESH_TOKEN_EXPIRE_MINUTES
 CONFIRM_TOKEN_EXPIRE_MINUTES = token_setting.CONFIRM_TOKEN_EXPIRE_MINUTES
 
 
@@ -60,6 +62,23 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
+def refresh_access_token(data: dict, expires_delta: timedelta | None = None):
+    """
+        토큰 생성
+    Args:
+         data:
+         expires_delta:
+    """
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, REFRESH_SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
 def create_confirm_token(data: dict, expires_delta: timedelta | None = None):
     """
         토큰 생성
@@ -94,4 +113,12 @@ def verify_token(token: str):
             )
         return email
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token"
+        )
+
+
+def get_email_by_token(token: str) -> str:
+    """토큰  활용 이메일 얻기"""
+    email = verify_token(token)
+    return email

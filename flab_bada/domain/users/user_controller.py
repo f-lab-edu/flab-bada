@@ -23,13 +23,17 @@ async def auth(token: str = Depends(oauth2_scheme)) -> str:
         토큰 확인 되면 email 데이터
     """
     if not token:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Sign in for access")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Sign in for access"
+        )
     decode_token_email = verify_token(token)
     return decode_token_email
 
 
 @user_router.post("/signup", status_code=status.HTTP_200_OK)
-async def sign_new_user(user: CreateUser, user_service: UserService = Depends(UserService)) -> dict:
+async def sign_new_user(
+    user: CreateUser, user_service: UserService = Depends(UserService)
+) -> dict:
     """회원가입"""
     try:
         log.info(" 회원 가입 페이지 ")
@@ -58,7 +62,9 @@ async def login(data: CreateUser, us: UserService = Depends(UserService)) -> dic
     response_model=BaseUser,
     status_code=status.HTTP_200_OK,
 )
-async def me(email: str = Depends(auth), user_service: UserService = Depends(UserService)):
+async def me(
+    email: str = Depends(auth), user_service: UserService = Depends(UserService)
+):
     """내정보"""
     try:
         user_data = user_service.me(email)
@@ -70,11 +76,24 @@ async def me(email: str = Depends(auth), user_service: UserService = Depends(Use
 # role 변경 일반사용자에서 선생님으로 변경한다.
 @user_router.put("/users/role/{id}", status_code=status.HTTP_200_OK)
 # async def change_role(id: int, Authorization: str = Header("Authorization")):
-async def change_role(id: int, email: str = Depends(auth), user_service: UserService = Depends(UserService)):
+async def change_role(
+    user_id: int,
+    email: str = Depends(auth),
+    user_service: UserService = Depends(UserService),
+):
     """role 변경"""
     try:
         log.info(f"email: {email}")
-        user_service.change_role(id, email)
+        user_service.change_role(user_id, email)
     except Exception as e:
         raise e
     return {"message": "role has been changed"}
+
+
+# todo: refresh token
+@user_router.get("/refresh/token", status_code=status.HTTP_200_OK)
+async def refresh_token():
+    pass
+
+
+# todo: 개인정보 업데이트

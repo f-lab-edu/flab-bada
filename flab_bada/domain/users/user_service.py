@@ -5,21 +5,31 @@ from flab_bada.logging.logging import log_config
 from flab_bada.utils.bcrypt import (
     verify_password,
     ACCESS_TOKEN_EXPIRE_MINUTES,
+    REFRESH_TOKEN_EXPIRE_MINUTES,
     create_access_token,
+    refresh_access_token,
     get_cryptcontext,
+    get_email_by_token,
 )
 from fastapi import HTTPException, status, Depends
 from datetime import timedelta
 from flab_bada.domain.email.email_service import EmailService
+from ..redis.redis_client import RedisClient
 
 
 log = log_config("user service")
 
 
 class UserService:
-    def __init__(self, user_repository: UserRepository = Depends(), email_service: EmailService = Depends()):
+    def __init__(
+        self,
+        user_repository: UserRepository = Depends(),
+        email_service: EmailService = Depends(),
+        redis_client: RedisClient = Depends(),
+    ):
         self.user_repository: UserRepository = user_repository
         self.email_service = email_service
+        self.redis_client = redis_client
 
     # 유저 생성
     def create_user(self, create_user: CreateUser) -> dict:
@@ -36,10 +46,14 @@ class UserService:
             # password bcrypt
             user_pw = get_cryptcontext(create_user.password)
             log.info(f"bcrypt password: {user_pw}")
-            self.user_repository.create_user_data(user=User(email=create_user.email, password=user_pw))
+            self.user_repository.create_user_data(
+                user=User(email=create_user.email, password=user_pw)
+            )
 
             # 유저 생성 이메일 인증 로직 추가
-            self.email_service.send_email_v2(email_schema=EmailSchema(email=[create_user.email]))
+            self.email_service.send_email_v2(
+                email_schema=EmailSchema(email=[create_user.email])
+            )
 
         else:
             return {"message": "중복 데이터가 존재합니다.", "status": "duplication"}
@@ -77,9 +91,21 @@ class UserService:
         if check_password:
             # token 생성
             access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-            access_token = create_access_token(data={"sub": user.email}, expires_delta=access_token_expires)
+            refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+            access_token = create_access_token(
+                data={"sub": user.email}, expires_delta=access_token_expires
+            )
+
+            refresh_token_data = refresh_access_token(
+                data={"sub": user.email}, expires_delta=refresh_token_expires
+            )
+
+            name = f"token_{user.email}"
+            self.redis_client.set(name=name, value=refresh_token_data)
         else:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="아이디와 비번이 틀렸습니다.")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="아이디와 비번이 틀렸습니다."
+            )
 
         return {"access_token": access_token, "token_type": "bearer"}
 
@@ -93,14 +119,20 @@ class UserService:
         return BaseUser(id=user.id, email=user.email)
 
     # 사용자에서 선생님으로 변경
-    def change_role(self, id: int, email: str | None) -> None:
+    def change_role(self, user_id: int, email: str | None) -> None:
         log.info(f"email: {email}")
-        self.user_repository.change_role(id)
+        self.user_repository.change_role(user_id)
+
+    def refresh_token(self, token: str) -> str:
+        """refresh token data"""
+        email = get_email_by_token(token=token)
+        name = f"token_{email}"
+        return self.redis_client.get(name=name)
 
     # 상세 정보 조회
     def detail_me(self, email: str, user_id: int):
         pass
 
     # 유저 상세 정보 업데이트
-    def update_user(self, id: int, update_data: dict) -> User:
+    def update_user(self, user_id: int, update_data: dict) -> User:
         pass

@@ -39,8 +39,8 @@ class UserRepository(AbstractRepository):
         return user
 
     # 사용자에서 선생님으로 변경
-    def change_role(self, id: int):
-        user = self.db.query(User).filter(User.id == id)
+    def change_role(self, user_id: int):
+        user = self.db.query(User).filter(User.id == user_id)
         user.update({"role": "teacher"})
         self.db.commit()
         self.db.refresh(user)

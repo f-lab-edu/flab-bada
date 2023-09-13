@@ -6,6 +6,7 @@ from flab_bada.domain.email.email_repository import FakeEmailRedisRepository
 from flab_bada.schemas.users import CreateUser
 from flab_bada.domain.users.user_service import UserService
 from flab_bada.schemas.users import BaseUser
+from flab_bada.utils.bcrypt import refresh_access_token
 from fastapi.testclient import TestClient
 from main import app
 
@@ -44,7 +45,8 @@ class TestUser:
         cls.email = email
         cls.password = password
         user_service = UserService(
-            user_repository=FakeUserRepository(), email_service=EmailService(FakeEmailRedisRepository())
+            user_repository=FakeUserRepository(),
+            email_service=EmailService(FakeEmailRedisRepository()),
         )
         user_service.create_user(CreateUser(email=email, password=password))
 
@@ -52,7 +54,9 @@ class TestUser:
 
     # 유저 생성
     def test_create(self):
-        ret_data = self.user_service.create_user(CreateUser(email=self.email, password=self.password))
+        ret_data = self.user_service.create_user(
+            CreateUser(email=self.email, password=self.password)
+        )
 
         assert ret_data != ""
         assert isinstance(ret_data, dict)
@@ -65,7 +69,9 @@ class TestUser:
 
     # 로그인 테스트
     def test_login(self):
-        token_data = self.user_service.login(CreateUser(email=self.email, password=self.password))
+        token_data = self.user_service.login(
+            CreateUser(email=self.email, password=self.password)
+        )
 
         assert token_data.get("access_token") != ""
         assert token_data.get("token_type") == "bearer"
@@ -83,3 +89,24 @@ class TestUserDetail:
         user_service.create_user(CreateUser(email=email, password=password))
 
         cls.user_service = user_service
+
+
+def test_save_refresh_token():
+    from flab_bada.domain.redis.redis_client import FakeRedisClient
+
+    email = "jin3137@outlook.com"
+
+    user_service = UserService(
+        user_repository=FakeUserRepository(), redis_client=FakeRedisClient()
+    )
+
+    # token
+    token = refresh_access_token(data={"sub": email})
+
+    # redis save
+    name = f"token_{email}"
+    user_service.redis_client.set(name=name, value=token)
+
+    refresh_token = user_service.redis_client.get(name=name)
+
+    assert refresh_token != ""
