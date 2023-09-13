@@ -73,8 +73,8 @@ jobs:
       - name: flake8 check
         run: poetry run flake8 flab_bada/ --max-line-length=127
 
-      - name: run mysql
-        run: mysql -h 127.0.0.1 --port 3306 -u ${{secrets.MYSQL_USER}} -p ${{secrets.MYSQL_PASSWORD}} -e 'CREATE DATABASE IF NOT EXISTS test;'
+#      - name: run mysql
+#        run: mysql -h 127.0.0.1 --port 3306 -u ${{secrets.MYSQL_USER}} -p ${{secrets.MYSQL_PASSWORD}} -e 'CREATE DATABASE IF NOT EXISTS test;'
 
       - name: alembic upgrade
         run: poetry run alembic upgrade head
