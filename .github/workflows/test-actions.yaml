@@ -11,20 +11,20 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      mysql:
-        image: mysql:8.0
-        ports:
-          - 3306:3306
-        env:
-#          MYSQL_DATABASE: test
-#          MYSQL_ROOT_PASSWORD: dltjdrnr3137
-#          MYSQL_USER: admin
-#          MYSQL_PASSWORD: dltjdrnr3137
-          MYSQL_DATABASE: ${{secrets.MYSQL_DATABASE}}
+#      mysql:
+#        image: mysql:8.0
+#        ports:
+#          - 3306:3306
+#        env:
+##          MYSQL_DATABASE: test
+##          MYSQL_ROOT_PASSWORD: dltjdrnr3137
+##          MYSQL_USER: admin
+##          MYSQL_PASSWORD: dltjdrnr3137
+#          MYSQL_DATABASE: ${{secrets.MYSQL_DATABASE}}
 #          MYSQL_ROOT_PASSWORD: ${{secrets.MYSQL_ROOT_PASSWORD}}
-          MYSQL_USER: ${{secrets.MYSQL_USER}}
-          MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+#          MYSQL_USER: ${{secrets.MYSQL_USER}}
+#          MYSQL_PASSWORD: ${{secrets.MYSQL_PASSWORD}}
+#        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
 
       redis:
         image: redis
@@ -38,6 +38,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      - uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: "8.0"
+      - run: mysql -uroot -e 'SELECT version()'
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v3
