@@ -34,6 +34,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: run mysql
+      - run: mysql -h 127.0.0.1 --port 3306 -u root -p $MYSQL_PASSWORD -e 'CREATE DATABASE IF NOT EXISTS test;'
+
       - name: Set up Python 3.11
         uses: actions/setup-python@v3
         with:
