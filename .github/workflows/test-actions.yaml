@@ -32,10 +32,6 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: run mysql
-        uses: actions/checkout@v1
-        run: mysql -h 127.0.0.1 --port 3306 -u root -p $MYSQL_PASSWORD -e 'CREATE DATABASE IF NOT EXISTS test;'
-
       - uses: actions/checkout@v3
 
       - name: Set up Python 3.11
@@ -76,6 +72,10 @@ jobs:
 
       - name: flake8 check
         run: poetry run flake8 flab_bada/ --max-line-length=127
+
+      - name: run mysql
+        uses: actions/checkout@v1
+        run: mysql -h 127.0.0.1 --port 3306 -u root -p $MYSQL_PASSWORD -e 'CREATE DATABASE IF NOT EXISTS test;'
 
       - name: alembic upgrade
         run: poetry run alembic upgrade head
