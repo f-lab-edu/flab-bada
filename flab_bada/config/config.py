@@ -4,12 +4,12 @@ from pydantic import BaseSettings
 
 
 class UrlSetting(BaseSettings):
-    LOCAL_URL = os.getenv("LOCAL_URL")
+    LOCAL_URL = "http://localhost:8000"
 
 
 class TokenSetting(BaseSettings):
-    SECRET_KEY = os.getenv("SECRET_KEY")
-    REFRESH_SECRET_KEY = os.getenv("REFRESH_SECRET_KEY")
+    SECRET_KEY = os.getenv("SECRET_KEY", "test")
+    REFRESH_SECRET_KEY = os.getenv("REFRESH_SECRET_KEY", "test")
     ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES = 30
     REFRESH_TOKEN_EXPIRE_MINUTES = 1440
@@ -21,15 +21,15 @@ class Dbconnection(BaseSettings):
 
 
 class TestDbconnection(BaseSettings):
-    db_user = os.getenv("DB_USER")
-    db_password = os.getenv("DB_PASSWORD")
-    db_host = os.getenv("DB_HOST")
+    db_user = os.getenv("DB_USER", "root")
+    db_password = os.getenv("DB_PASSWORD", "dltjdrnr3137")
+    db_host = os.getenv("DB_HOST", "localhost")
     db_port = 3306
-    db_name = os.getenv("DB_NAME")
+    db_name = os.getenv("DB_NAME", "test")
 
 
 class RedisConnection(BaseSettings):
-    host = os.getenv("DB_HOST")
+    host = os.getenv("DB_HOST", "localhost")
     port = 6379
 
 
